@@ -43,6 +43,20 @@ int main()
 	cout << x << endl;
 	cout << y << endl;
 }
-
 ```
 #### typename -> class로 변경 가능
+```
+template<typename T>
+void _swap(T& x, T& y)
+{
+	T temp = x;
+	x = y;
+	y = temp;
+}
+```
+#### 위 부분 자체는 함수가 아님 함수 템플릿임
+```
+_swap(x, y);
+```
+#### 이런 시긍로 호출하는 순간 함수 코드가 생성됨
+
