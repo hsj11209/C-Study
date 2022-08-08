@@ -46,7 +46,7 @@ int main()
 ```
 #### typename -> class로 변경 가능
 
-#### 위 부분 자체는 함수가 아님 함수 템플릿임
+#### 위 부분 자체는 함수가 아님 함수 template임(type을 parater로 넘김 -> type을 선언하는 위치에 T가 있음)
 ```
 template<typename T>
 void _swap(T& x, T& y)
@@ -61,5 +61,15 @@ void _swap(T& x, T& y)
 ```
 _swap(x, y);
 ```
+
+#### int를 parameter로 들어가서 아래와 같이 컴파일 타임에 암시적으로 추론 
+```
+_swap<int>(x, y);
+```
+
+#### Template은 일반화 프로그래밍(Generic programing)을 가능하게 해줌
+#### 타입에 의존하지 않고 하나의 값을 여러 데이터 타입을 가져 재사용성을 높이는 방식
+
+
 
 
