@@ -1,3 +1,3 @@
 # C-Study
-##Template
+## Template
 ### 개념
