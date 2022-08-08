@@ -45,3 +45,4 @@ int main()
 }
 
 ```
+#### typename -> class로 변경 가능
