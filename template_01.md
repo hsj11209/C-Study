@@ -70,6 +70,63 @@ _swap<int>(x, y);
 #### Template은 일반화 프로그래밍(Generic programing)을 가능하게 해줌
 #### 타입에 의존하지 않고 하나의 값을 여러 데이터 타입을 가져 재사용성을 높이는 방식
 
+#### type이 아닌 값을 넣을 수 있음 template parameter는 <>를 통해 전달
+```
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+template<int N>
+int num()
+{
+	return N;
+}
+int main() 
+{
+	cout << num<5>() << endl;
+}
+
+```
+
+##  사용 예시
+### func을 호출 할 때  컴파일러가 N을 추론함 컴파일 때 추론하니 정적 배열만 가능
+```
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+template<int N>
+int func(int(&nums)[N])
+{
+	return N;
+}
+int main() 
+{
+	int nums[] = { 1,2,3 };
+	cout << func(nums) << endl;
+}
+```
+
+### type또한 추가로 가능
+```
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+template<int N,typename T>
+T func(T (&nums)[N])
+{
+	return N;
+}
+int main() 
+{
+	int nums[100] = { 1,2,3 };
+	cout << func(nums) << endl;
+}
+```
 
 
 
