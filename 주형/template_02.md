@@ -85,3 +85,217 @@ int main()
 	q1.pop();
 	cout << q1.top() << endl; //abcd
 }
+```
+### Q의 사이즈도 정해야 한다면
+```
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+template <typename T, int N>
+
+class Queue
+{
+private:
+	size_t _size;
+	T _items[N];
+
+public:
+	Queue()
+		:_size(0)  // 외부에서 봤을 때 Queue 원소 갯수
+		, _items{}
+	{
+
+	}
+
+
+	void push(T item)
+	{
+		if (_size < N)
+		{
+			_items[_size++] = item;
+		}
+		else
+			throw std::out_of_range("overflow");
+	}
+
+	void pop()
+	{
+		if(_size == 0)
+			throw std::out_of_range("underflow");
+		--_size;
+	}
+
+	T& top()
+	{
+		return _items[_size - 1];
+	}
+};
+
+int main() 
+{
+	Queue <int,3> q0; 
+	q0.push(1);
+	q0.push(2);
+	q0.push(4);
+	cout << q0.top() << endl;
+	q0.pop();
+	cout << q0.top() << endl;
+
+	Queue <std::string,10> q1;
+	q1.push("abcd");
+	q1.push("123");
+	cout << q1.top() << endl;
+	q1.pop();
+	cout << q1.top() << endl;
+}
+	
+```
+	
+### 메소드 구현단 분리	
+```
+	#include <iostream>
+
+using std::cout;
+using std::endl;
+
+template <typename T, int N>
+
+class Queue
+{
+private:
+	size_t _size;
+	T _items[N];
+
+public:
+	Queue();
+	void push(T item);
+	void pop();
+	T& top();
+};
+
+template <typename T, int N>
+Queue<T,N>::Queue()
+	:_size(0)  // 외부에서 봤을 때 Queue 원소 갯수
+	, _items{}
+{
+
+}
+
+template <typename T, int N>
+void Queue<T, N>::push(T item)
+{
+	if (_size < N)
+	{
+		_items[_size++] = item;
+	}
+	else
+		throw std::out_of_range("overflow");
+}
+
+template <typename T, int N>
+void Queue<T, N>::pop()
+{
+	if (_size == 0)
+		throw std::out_of_range("underflow");
+	--_size;
+}
+
+template <typename T, int N>
+T& Queue<T,N>::top()
+{
+	return _items[_size - 1];
+}
+
+
+int main() 
+{
+	Queue <int,3> q0; 
+	q0.push(1);
+	q0.push(2);
+	q0.push(4);
+	cout << q0.top() << endl;
+	q0.pop();
+	cout << q0.top() << endl;
+
+	Queue <std::string,10> q1;
+	q1.push("abcd");
+	q1.push("123");
+	cout << q1.top() << endl;
+	q1.pop();
+	cout << q1.top() << endl;
+}
+
+```
+	
+### vector를 사용하여 구현
+```
+	#include <iostream>
+#include <vector>
+using std::cout;
+using std::endl;
+
+template <typename T>
+
+class Queue
+{
+private:
+	std::vector<T> _items;
+
+public:
+	Queue();
+	void push(T item);
+	void pop();
+	T& top();
+};
+
+template <typename T>
+Queue<T>::Queue()
+	:_items{}
+{
+
+}
+
+template <typename T>
+void Queue<T>::push(T item)
+{
+	_items.push_back(item);
+}
+
+template <typename T>
+void Queue<T>::pop()
+{
+	if (_items.size() == 0)
+		throw std::out_of_range("underflow");
+	_items.pop_back();
+}
+
+template <typename T>
+T& Queue<T>::top()
+{
+	if (_items.size() == 0)
+		throw std::out_of_range("underflow");
+	return _items.back();
+}
+
+
+int main() 
+{
+	Queue <int> q0; 
+	q0.push(1);
+	q0.push(2);
+	q0.push(4);
+	cout << q0.top() << endl;
+	q0.pop();
+	cout << q0.top() << endl;
+
+	Queue <std::string> q1;
+	q1.push("abcd");
+	q1.push("123");
+	cout << q1.top() << endl;
+	q1.pop();
+	cout << q1.top() << endl;
+}
+
+```
