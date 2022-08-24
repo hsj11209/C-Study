@@ -1,130 +1,78 @@
-##  템플릿 특수화 
-### 템플릿의 특정 패턴에 대해서 별도의 처리가 하고 싶을 경우
+##  템플릿 구체화 
+### 함수 템플릿,클래스템플릿은 함수와 클래스 자체가 아님 , 클래스나 함수를 만들어 주기 위한 형판에 불과함
+### 구체화를 해주지 않으면 compile해도 기계어로 변환 안됨 
+### 템플릿을 사용하려면 구체화 해줘야 함
 
-```
-#include <iostream>
-#include <vector>
-using std::cout;
-using std::endl;
-
-class Test // 이 클래스에 대해서만 다른 템플릿 처리를 해주고 싶을 때 
-{
-
-};
-
-template <typename T>
-void change(T& x, T& y)
-{
-	cout << "swap" << endl;
-	T temp = x;
-	x = y;
-	y = temp;
-}
-
-template<>
-void change<Test>(Test& x, Test& y)
-{
-	cout << "swap<Test>" << endl;
-}
-
-int main() 
-{
-	Test t0, t1;
-	change(t0, t1);
-}
-
-```
-### 완전 특수화, 부분 특수화 
-```
-#include <iostream>
-#include <vector>
-using std::cout;
-using std::endl;
-
-template<typename T, typename S>
-class Test // 이 클래스에 대해서만 다른 템플릿 처리를 해주고 싶을 때 
-{
-public:
-	T num0;
-	S num1;
-};
-
-template<>
-class Test<int, float> // 완전 특수화
-{
-
-};
-
-template<typename T> //  타입이 완전히 정의되지 않음 부분 특수화 
-class Test<T, T>
-{
-public:
-	T nums;
-};
-
-int main() 
-{
-	Test<int, int> t0;   // 세번째 템플릿으로 특수화
-	Test<int, float> t1; // 두번째 템플릿으로 특수화
-	Test<float, int> t2; // 첫번째 템플릿으로 특수화
-}
-
-	
-```
-	
-### vector<bool>은 특수화 되어있음
-```
-		#include <iostream>
-	#include <vector>
-	using std::cout;
-	using std::endl;
-
-	int main() 
-	{
-		std::vector<int> iv; 
-		std::vector<float> fv;
-		std::vector<bool> bv; // vector는 bool이 특수화 되어 있음
-	}
-	/*
-	* bool은 1byte true false를 8개 표현할 수 있음 이를 효율적으로 표현하기 위해 특수화 함
-	*/
-
-
-```
-	
-### 메소드 특수화 
 ```
 	#include <iostream>
 	#include <vector>
 	using std::cout;
 	using std::endl;
 
-	template<typename T>
-	class Queue
-	{
-	private:
-		std::vector<T> _items;
-
-	public:
-		void push(T item)
-		{
-			_items.push_back(item);
-		}
-	};
-
-	template<>  // 메소드에 대한 특수화
-	void Queue<int>::push(int item)
-	{
-		cout << "int" << endl;
-	}
+	template
+	void std::swap<int>(int&, int&); // 명시적 구체화
 
 	int main() 
 	{
-		Queue<float> q0;
-		q0.push(1);
-		Queue<int> q1;
-		q1.push(1.f);
-
+		// 암시적 구체화
+		std::vector<int> v; 
+		int x = 10, y = 20;
+		std::swap(x, y);
 	}
 
 ```
+### 예시 swap.h
+```
+#pragma once
+
+template<typename T>
+void swap(T& x, T& y);
+	
+```
+### 예시 swap.cpp
+```
+#include "swap.h"
+
+template<typename T>
+void swap(T& x, T& y)
+{
+	T temp = x;
+	x = y;
+	y = temp;
+}
+
+```
+### 예시 main 
+```
+	#include <iostream>
+	#include "swap.h"	
+	using std::cout;
+	using std::endl;
+
+	int main() 
+	{
+		int x = 10, y = 20;
+		swap(x, y);
+	}
+
+```
+### 이대로 빌드시 에러가 남 -> header파일의 선언을 찾을 수 있으나 -> cpp파일에 정의는 찾을 수 없음
+### main에서 호출 시 암시적 구체화를 하였음 swap<int>(x,y)를 호출했음 -> 템플릿이 아닌 일반 함수는 링크 되지만 함수 템플릿은 기계어로 안만들어 짐
+### 기계어로 안만들어져서 암시적 구체화일 때 기계어로 만들어야 되는데 코드가 없음
+### swap cpp파일 수정
+```
+	#include <iostream>
+	#include "swap.h"	
+	using std::cout;
+	using std::endl;
+
+	int main() 
+	{
+		int x = 10, y = 20;
+		swap(x, y);
+	}
+
+```
+### 헤더파일에 구현을 해줘야 함 
+
+	
