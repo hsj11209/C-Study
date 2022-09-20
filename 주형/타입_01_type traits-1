@@ -1,0 +1,159 @@
+##  type traits
+### #include <type_traits>
+### 컴파일 시간에 타입에 관련 핸들링을 하려면 template을 
+### template을 사용사여 type에 관련 핸들링을 하려 할때 type_traits를 사용
+
+
+```
+#include <iostream>
+#include <type_traits>
+
+using std::cout;
+using std::endl;
+
+int main()
+{
+	cout << std::boolalpha;
+	cout << std::is_pointer<int*>::value << endl;
+	cout << std::is_pointer<int>::value << endl;
+}
+```
+### is_pointer -> pointer면 true pointer아니면 false
+```
+#include <iostream>
+#include <type_traits>
+
+using std::cout;
+using std::endl;
+
+template <typename T>
+struct is_pointer
+{
+	static const bool value = false;
+};
+
+template <typename T>
+struct is_pointer<T*>
+{
+	static const bool value = true;
+};
+
+template <typename T>
+void foo(T t)
+{
+	cout << is_pointer<T>::value << endl;
+}
+
+int main()
+{
+	cout << std::boolalpha;
+
+	int num = 0;
+	int* pNum = &num;
+	foo(num);
+	foo(pNum);
+}
+```
+### 템플릿으로 is_pointer 구현
+### foo 함수에서 T가 포인터인지 아닌지 알 수 없음 foo함수가 쓰였을 때 비로소 알 수 있음 이때 is_pointer를 사용하면 됨
+```
+#include <iostream>
+#include <type_traits>
+
+using std::cout;
+using std::endl;
+
+int main()
+{
+	cout << std::boolalpha;
+
+	std::add_pointer<int>::type;  // 둘이 같음
+	std::add_pointer_t<int>;
+
+	int num = 0;
+	std::add_pointer<int>::type pNum = &num;
+
+	*pNum = 10;
+
+	cout << num << endl;
+}
+```
+### add_pointer 사용
+```
+#include <iostream>
+#include <type_traits>
+
+using std::cout;
+using std::endl;
+
+int main()
+{
+	cout << std::boolalpha;
+
+	int num = 0;
+	std::remove_pointer<int>::type pNum = 10;
+
+	cout << typeid(num).name() << endl;
+}
+```
+### remove_pointer 사용
+```
+#include <iostream>
+#include <type_traits>
+
+using std::cout;
+using std::endl;
+
+template<typename T>
+struct remove_pointer
+{
+	using type = T;
+};
+
+template<typename T>
+struct remove_pointer<T*>
+{
+	using type = T;
+};
+
+int main()
+{
+	cout << std::boolalpha;
+	remove_pointer<int**>::type num;
+
+	cout << typeid(num).name() << endl;
+}
+```
+### remove_pointer를 template으로 구현 
+```
+#include <iostream>
+#include <type_traits>
+
+using std::cout;
+using std::endl;
+
+template<typename T>
+struct add_pointer
+{
+	using type = T*;
+};
+
+template<typename T>
+struct add_pointer<T&>
+{
+	using type = T*;
+};
+
+int main()
+{
+	cout << std::boolalpha;
+	std::add_pointer<int>::type num;
+	std::add_pointer<int*>::type num1;
+	std::add_pointer<int&>::type num2;
+
+	cout << typeid(num).name() << endl;
+	cout << typeid(num1).name() << endl;
+	cout << typeid(num2).name() << endl;
+}
+```
+### add_pointer를 template으로 구현 , 참조형식 특수화
